@@ -1,7 +1,7 @@
 # docker-postgresql
 A docker postgres container that automatically backs itself up and maintains itself
 
-Please note that this is a template and not intended for production user. Change to whatever you need first and carefully review the results. 
+Please note that this is a template and not intended for production use. Change to whatever you need first and carefully review the results. 
 
 This postgres container is based of the offical postgres alpine image. I have used version 10.5 since this is the latest version of postgres available that is not beta. 
 
