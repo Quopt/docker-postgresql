@@ -15,7 +15,7 @@ The password assigned to the postgres user is not set to a default password, but
 
 An example yml file to start this container with would be (assuming that there is a data folder on your docker server where the databases files and backups are stored) : 
 
-version: "2"
+```version: "2"
 services:
   postgresql:
     image: my-postgresql-image
@@ -37,6 +37,7 @@ services:
 networks:
   my_network:
        driver: bridge
+```
 
 
 All code provided under the AGPL-3.0 license. Use at your own risk. 
