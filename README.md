@@ -9,7 +9,7 @@ On postgres the following additional software is installed :
 - cron
 - pg_cron
 
-the pg_cron plugin will automatically be installed after the container is first started. cron will be started as well with 3 automated jobs : backup, refresh statistics, rebuild indexes. They run every night at 2/3/4 AM.
+the pg_cron plugin will automatically be installed after the container is first started. cron will be started as well with 3 automated jobs : backup, vacuum, refresh statistics/rebuild indexes. They run every night at 2/3/4 AM.
 
 The password assigned to the postgres user is not set to a default password, but generated using the current date. If security is your thing then you would probably want to login to your container asap after creation and change this. Check the logs for the password.
 
