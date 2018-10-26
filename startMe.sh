@@ -7,15 +7,26 @@ echo Starting PostGreSQL ....
 date
 cd /usr/local/bin
 
-mkdir /var/lib/postgresql/data 
-mkdir /var/lib/postgresql/backup
-chmod -R 777 /var/lib/postgresql/backup
+# create folders if they do not exist, otherwise the check for postgresql.conf might fail
+if [ ! -d /var/lib/postgresql/data ]; then
+  mkdir /var/lib/postgresql/data
+fi
+if [ ! -d /var/lib/postgresql/backup ]; then
+  mkdir /var/lib/postgresql/backup
+fi
+# make sure everybody can access the backup. The docker host might break in which case these files are as readable as possible.
+chmod -R 777 /var/lib/postgresql/backup || true
 
 # create the postgresql.conf file with the proper configuration for internal network usage
 if [ ! -f /var/lib/postgresql/data/postgresql.conf ]; then
   echo Creating database and connection permission files ...
-  echo PG$(date -I) > /tmp/password
-  export pwd=$(echo PG$(date -I))
+  if [ -z "$PG_PASSWORD" ]; then 
+    echo PG$(date -I) > /tmp/password
+    export pwd=$(echo PG$(date -I))
+  else 
+    export pwd=$PG_PASSWORD
+    echo $PG_PASSWORD > /tmp/password
+  fi
   su -c "./initdb -D /var/lib/postgresql/data/data -U postgres --pwfile=/tmp/password" postgres
   echo Created password for user postgres = 
   cat /tmp/password
@@ -45,6 +56,8 @@ if [ ! -f /var/lib/postgresql/data/postgresql.conf ]; then
   cp /tmp/postgresql.conf /var/lib/postgresql/data/data/postgresql.conf
   chmod 777 /var/lib/postgresql/data/data/postgresql.conf
   su -c "sleep 120; /usr/local/bin/psql -U postgres --command \"CREATE EXTENSION pg_cron;\" " postgres &
+  
+  rm /tmp/password
 fi 
 
 # start cron for maintenance tasks. Please note that if cron crashes (unlikely) that it will not automatically be restarted
