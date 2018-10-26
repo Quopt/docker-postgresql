@@ -1,5 +1,5 @@
 FROM postgres:10.5-alpine
-LABEL server="Postgresql-10"
+LABEL server="Postgresql"
 
 #install pg_cron into the container
 ENV PG_CRON_VERSION=1.0.2
