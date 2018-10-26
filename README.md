@@ -13,6 +13,8 @@ the pg_cron plugin will automatically be installed after the container is first 
 
 The password assigned to the postgres user is not set to a default password, but generated using the current date. If security is your thing then you would probably want to login to your container asap after creation and change this. Check the logs for the password.
 
+Optionally you may set the PG_PASSWORD environment variable. In which case this will be used for your password. 
+
 An example yml file to start this container with would be (assuming that there is a data folder on your docker server where the databases files and backups are stored) : 
 
 ```version: "2"
