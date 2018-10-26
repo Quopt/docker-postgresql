@@ -23,13 +23,14 @@ if [ ! -f /var/lib/postgresql/data/postgresql.conf ]; then
   if [ -z "$PG_PASSWORD" ]; then 
     echo PG$(date -I) > /tmp/password
     export pwd=$(echo PG$(date -I))
+    echo Created password for user postgres = 
+    cat /tmp/password
   else 
     export pwd=$PG_PASSWORD
     echo $PG_PASSWORD > /tmp/password
   fi
   su -c "./initdb -D /var/lib/postgresql/data/data -U postgres --pwfile=/tmp/password" postgres
-  echo Created password for user postgres = 
-  cat /tmp/password
+
   echo "listen_addresses = '*'" >  /var/lib/postgresql/data/postgresql.conf
 
   echo "# TYPE  DATABASE        USER            ADDRESS                 METHOD" > /var/lib/postgresql/data/data/pg_hba.conf
