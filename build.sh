@@ -1,1 +1,1 @@
-docker build -t my-postgresql-image .
+docker build -t postgres-10 .
