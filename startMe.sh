@@ -47,11 +47,6 @@ if [ ! -f /var/lib/postgresql/data/postgresql.conf ]; then
   echo "host    replication     all             ::1/128                 trust" >> /var/lib/postgresql/data/data/pg_hba.conf
   echo "# TYPE DATABASE USER CIDR-ADDRESS  METHOD" >> /var/lib/postgresql/data/data/pg_hba.conf
   echo "host    all             all             0.0.0.0/0               md5" >> /var/lib/postgresql/data/data/pg_hba.conf
-  
-  echo Scheduling db maintentance : backup of all databases at 2 AM, vacuum at 3 AM, reindex at 4AM
-  echo "0    2       *       *       *       /usr/local/bin/pg_dumpall --disable-triggers -U postgres | gzip -c > /backup/daily-backup.zip" >> /etc/crontabs/root
-  echo "0    3       *       *       *       /usr/local/bin/vacuumdb -z -U postgres -a"  >> /etc/crontabs/root
-  echo "0    4       *       *       *       /usr/local/bin/reindexdb -U postgres -a"  >> /etc/crontabs/root
 
   echo Creating pg_cron extension and setting postgres behaviour ...
   cp /tmp/postgresql.conf /var/lib/postgresql/data/data/postgresql.conf
@@ -60,6 +55,15 @@ if [ ! -f /var/lib/postgresql/data/postgresql.conf ]; then
   
   rm /tmp/password
 fi 
+
+# check for scheduled jobs
+export cron_check=$(grep daily-backup /etc/crontabs/root)
+if [ -z $cron_check ]; then
+  echo Scheduling db maintentance : backup of all databases at 2 AM, vacuum at 3 AM, reindex at 4AM
+  echo "0    2       *       *       *       /usr/local/bin/pg_dumpall --disable-triggers -U postgres | gzip -c > /backup/daily-backup.zip" >> /etc/crontabs/root
+  echo "0    3       *       *       *       /usr/local/bin/vacuumdb -z -U postgres -a"  >> /etc/crontabs/root
+  echo "0    4       *       *       *       /usr/local/bin/reindexdb -U postgres -a"  >> /etc/crontabs/root
+fi
 
 # start cron for maintenance tasks. Please note that if cron crashes (unlikely) that it will not automatically be restarted
 crond & 
